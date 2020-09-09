@@ -25,6 +25,31 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.Surface([10, 10])
         self.image.fill(white)
         self.rect = self.image.get_rect()
+        self.speed = 10
+        self.dx = 1
+        self.dy = 1
+
+player_paddle = Paddle()
+player_paddle.rect.x = 25
+player_paddle.rect.y = 225
+
+bot_paddle = Paddle()
+bot_paddle.rect.x = 715
+bot_paddle.rect.y = 225
+
+paddle_speed = 20
+
+ball = Ball()
+ball.rect.x = 375
+ball.rect.y = 250
+
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player_paddle, bot_paddle, ball)
+
+def redraw():
+    window.fill(black)
+    all_sprites.draw(window)
+    pygame.display.update()
 
 run = True
 
@@ -39,5 +64,16 @@ while run:
             if event.key == pygame.K_ESCAPE:
                 run = False
                 continue
+
+    key = pygame.key.get_pressed()
+    if key[pygame.K_w]:
+        player_paddle.rect.y -= paddle_speed
+    if key[pygame.K_s]:
+        player_paddle.rect.y += paddle_speed
+
+    ball.rect.x += ball.speed
+    ball.rect.y += ball.speed
+
+    redraw()
 
 pygame.quit()
