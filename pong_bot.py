@@ -61,11 +61,12 @@ def redraw():
     player_rect.center = (50, 50)
 
     # Bot Score
-    player_score = font.render(str(player_paddle.points), False, white)
-    player_rect = player_score.get_rect()
-    player_rect.center = (50, 50)
+    bot_score = font.render(str(bot_paddle.points), False, white)
+    bot_rect = bot_score.get_rect()
+    bot_rect.center = (700, 50)
 
     window.blit(player_score, player_rect)
+    window.blit(bot_score, bot_rect)
     all_sprites.draw(window)
     pygame.display.update()
 
@@ -84,10 +85,16 @@ while run:
                 continue
 
     key = pygame.key.get_pressed()
-    if key[pygame.K_w]:
+    if key[pygame.K_w] and player_paddle.rect.y > 0:
         player_paddle.rect.y -= paddle_speed
-    if key[pygame.K_s]:
+    if key[pygame.K_s] and player_paddle.rect.y < 410:
         player_paddle.rect.y += paddle_speed
+
+    if ball.rect.x > 375:
+        if ball.rect.y > bot_paddle.rect.y and bot_paddle.rect.y < 410:
+            bot_paddle.rect.y += paddle_speed
+        if ball.rect.y < bot_paddle.rect.y and bot_paddle.rect.y > 0:
+            bot_paddle.rect.y -= paddle_speed
 
     ball.rect.x += ball.speed * ball.dx
     ball.rect.y += ball.speed * ball.dy
@@ -105,7 +112,8 @@ while run:
     if ball.rect.y > 490 or ball.rect.y < 10:
         ball.dy *= -1
 
-    if player_paddle.rect.colliderect(ball.rect):
+    if (player_paddle.rect.colliderect(ball.rect)
+            or bot_paddle.rect.colliderect(ball.rect)):
         ball.dx *= -1
 
     redraw()
