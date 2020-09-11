@@ -1,6 +1,7 @@
 """Pong vs. bot (single player)"""
 
 import pygame
+import random
 
 pygame.init()
 
@@ -25,7 +26,7 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.Surface([10, 10])
         self.image.fill(white)
         self.rect = self.image.get_rect()
-        self.speed = 10
+        self.speed = 15
         self.dx = 1
         self.dy = 1
 
@@ -37,7 +38,7 @@ bot_paddle = Paddle()
 bot_paddle.rect.x = 715
 bot_paddle.rect.y = 225
 
-paddle_speed = 20
+paddle_speed = 30
 
 ball = Ball()
 ball.rect.x = 375
@@ -84,13 +85,15 @@ while run:
                 run = False
                 continue
 
+    # Player paddle controls
     key = pygame.key.get_pressed()
     if key[pygame.K_w] and player_paddle.rect.y > 0:
         player_paddle.rect.y -= paddle_speed
     if key[pygame.K_s] and player_paddle.rect.y < 410:
         player_paddle.rect.y += paddle_speed
 
-    if ball.rect.x > 375:
+    # Bot paddle with 15% chance to make errors
+    if ball.rect.x > 375 and random.random() > 0.15:
         if ball.rect.y > bot_paddle.rect.y and bot_paddle.rect.y < 410:
             bot_paddle.rect.y += paddle_speed
         if ball.rect.y < bot_paddle.rect.y and bot_paddle.rect.y > 0:
