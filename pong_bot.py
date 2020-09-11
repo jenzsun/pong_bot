@@ -48,6 +48,24 @@ all_sprites.add(player_paddle, bot_paddle, ball)
 
 def redraw():
     window.fill(black)
+    # Title Font
+    font = pygame.font.SysFont('monospace', 30)
+    text = font.render('PONG', False, white)
+    text_rect = text.get_rect()
+    text_rect.center = (375, 25)
+    window.blit(text, text_rect)
+
+    # Player Score
+    player_score = font.render(str(player_paddle.points), False, white)
+    player_rect = player_score.get_rect()
+    player_rect.center = (50, 50)
+
+    # Bot Score
+    player_score = font.render(str(player_paddle.points), False, white)
+    player_rect = player_score.get_rect()
+    player_rect.center = (50, 50)
+
+    window.blit(player_score, player_rect)
     all_sprites.draw(window)
     pygame.display.update()
 
@@ -71,8 +89,24 @@ while run:
     if key[pygame.K_s]:
         player_paddle.rect.y += paddle_speed
 
-    ball.rect.x += ball.speed
-    ball.rect.y += ball.speed
+    ball.rect.x += ball.speed * ball.dx
+    ball.rect.y += ball.speed * ball.dy
+
+    if ball.rect.x > 740:
+        ball.rect.x, ball.rect.y = 375, 250
+        ball.dx *= -1
+        player_paddle.points += 1
+
+    if ball.rect.x < 10:
+        ball.rect.x, ball.rect.y = 375, 250
+        ball.dx *= -1
+        bot_paddle.points += 1
+
+    if ball.rect.y > 490 or ball.rect.y < 10:
+        ball.dy *= -1
+
+    if player_paddle.rect.colliderect(ball.rect):
+        ball.dx *= -1
 
     redraw()
 
